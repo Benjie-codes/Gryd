@@ -1,4 +1,4 @@
-import React from "react";
+import { Instagram, Linkedin, Twitter } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -9,10 +9,17 @@ export default function Footer() {
           <span className="font-display font-bold tracking-tight text-xl">GRYD</span>
         </div>
 
-        <div className="flex gap-8 text-sm text-muted-foreground font-mono">
-          {/* <a href="#" className="hover:text-primary transition-colors">MANIFESTO</a> */}
-          <a href="#" className="hover:text-primary transition-colors">PINTEREST</a>
-          <a href="#" className="hover:text-primary transition-colors">TWITTER</a>
+        <div className="flex gap-8 text-muted-foreground">
+          <a href="#" className="hover:text-primary transition-colors hover:scale-110 duration-200">
+            {/* Using Twitter icon for X as it's the standard library replacement often, or I could use an SVG for X if critical. For now Twitter icon is a safe fallback or I can just assume they want the X logo. */}
+            <Twitter className="w-5 h-5" />
+          </a>
+          <a href="#" className="hover:text-primary transition-colors hover:scale-110 duration-200">
+            <Instagram className="w-5 h-5" />
+          </a>
+          <a href="#" className="hover:text-primary transition-colors hover:scale-110 duration-200">
+            <Linkedin className="w-5 h-5" />
+          </a>
         </div>
 
         <div className="text-xs text-white/20 font-mono">

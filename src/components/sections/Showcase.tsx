@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
 
 const projects = [
     {
@@ -33,11 +32,11 @@ export default function Showcase() {
     return (
         <section id="preview" className="py-24 px-4 bg-background border-t border-white/5">
             <div className="container mx-auto">
-                <div className="mb-10 flex relative">
-                    <h2 className="text-4xl md:text-6xl font-display font-black tracking-tighter mb-4">
-                        SELECTED <div className="text-primary italic">OUTPUTS</div>
+                <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 relative">
+                    <h2 className="text-4xl md:text-6xl font-display font-black tracking-tighter">
+                        SELECTED <span className="text-primary italic block md:inline">OUTPUTS</span>
                     </h2>
-                    <p className="text-muted-foreground font-mono text-sm max-w-md absolute right-0 bottom-0">
+                    <p className="text-muted-foreground font-mono text-sm max-w-md">
                         Curated generated assets rendered in real-time. High-fidelity textures for next-gen interfaces.
                     </p>
                 </div>

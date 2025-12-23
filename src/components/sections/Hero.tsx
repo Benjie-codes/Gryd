@@ -58,7 +58,7 @@ export default function Hero() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1, duration: 1 }}
-                    className="mt-24"
+                    className="mt-16"
                 >
                     <ArrowDown className="w-6 h-6 text-white/50 animate-bounce" />
                 </motion.div>
