@@ -1,0 +1,944 @@
+/* =============================================================================
+   GRYD Prototype Styles
+   Dark UI with green accent matching PRD aesthetic
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   CSS Variables
+   ----------------------------------------------------------------------------- */
+.prototype-container {
+    --proto-bg: #0a0a0a;
+    --proto-surface: #141414;
+    --proto-surface-hover: #1a1a1a;
+    --proto-border: #2a2a2a;
+    --proto-border-hover: #3a3a3a;
+    --proto-text: #ffffff;
+    --proto-text-secondary: #888888;
+    --proto-text-muted: #555555;
+    --proto-accent: #22c55e;
+    --proto-accent-hover: #16a34a;
+    --proto-accent-dim: rgba(34, 197, 94, 0.15);
+    --proto-danger: #ef4444;
+    --proto-radius: 8px;
+    --proto-radius-sm: 4px;
+    --proto-transition: 150ms ease;
+}
+
+/* -----------------------------------------------------------------------------
+   Layout
+   ----------------------------------------------------------------------------- */
+.prototype-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--proto-bg);
+    color: var(--proto-text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
+}
+
+.prototype-canvas-area {
+    flex: 1;
+    position: relative;
+    background-color: var(--proto-bg);
+    border-right: 1px solid var(--proto-border);
+}
+
+.prototype-controls-panel {
+    width: 320px;
+    min-width: 320px;
+    height: 100vh;
+    background-color: var(--proto-surface);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: width 0.3s ease, min-width 0.3s ease, opacity 0.3s ease;
+}
+
+.prototype-controls-panel.collapsed {
+    width: 0;
+    min-width: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Custom scrollbar */
+.prototype-controls-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.prototype-controls-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.prototype-controls-panel::-webkit-scrollbar-thumb {
+    background: var(--proto-border);
+    border-radius: 3px;
+}
+
+.prototype-controls-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--proto-border-hover);
+}
+
+/* -----------------------------------------------------------------------------
+   Panel Sections
+   ----------------------------------------------------------------------------- */
+.proto-section {
+    border-bottom: 1px solid var(--proto-border);
+    padding: 16px;
+}
+
+.proto-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.proto-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--proto-text-secondary);
+}
+
+.proto-section-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: 1px solid var(--proto-border);
+    border-radius: var(--proto-radius-sm);
+    color: var(--proto-text-secondary);
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.proto-section-action:hover {
+    background: var(--proto-accent-dim);
+    border-color: var(--proto-accent);
+    color: var(--proto-accent);
+}
+
+/* -----------------------------------------------------------------------------
+   Layer List
+   ----------------------------------------------------------------------------- */
+.proto-layer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.proto-layer-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--proto-bg);
+    border: 1px solid var(--proto-border);
+    border-radius: var(--proto-radius);
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.proto-layer-item:hover {
+    border-color: var(--proto-border-hover);
+}
+
+.proto-layer-item.active {
+    border-color: var(--proto-accent);
+    background: var(--proto-accent-dim);
+}
+
+.proto-layer-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--proto-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.proto-layer-visibility {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: var(--proto-radius-sm);
+    color: var(--proto-text-secondary);
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.proto-layer-visibility:hover {
+    color: var(--proto-text);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.proto-layer-visibility.hidden {
+    color: var(--proto-text-muted);
+}
+
+.proto-layer-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: var(--proto-radius-sm);
+    color: var(--proto-text-muted);
+    cursor: pointer;
+    transition: all var(--proto-transition);
+    opacity: 0;
+}
+
+.proto-layer-item:hover .proto-layer-delete {
+    opacity: 1;
+}
+
+.proto-layer-delete:hover {
+    color: var(--proto-danger);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* -----------------------------------------------------------------------------
+   Form Controls
+   ----------------------------------------------------------------------------- */
+.proto-control-group {
+    margin-bottom: 12px;
+}
+
+.proto-control-group:last-child {
+    margin-bottom: 0;
+}
+
+.proto-control-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--proto-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.proto-control-value {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 10px;
+    color: var(--proto-text-muted);
+}
+
+/* Sliders */
+.proto-slider {
+    width: 100%;
+    height: 6px;
+    appearance: none;
+    background: var(--proto-bg);
+    border: 1px solid var(--proto-border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color var(--proto-transition);
+}
+
+.proto-slider:hover {
+    border-color: var(--proto-border-hover);
+}
+
+.proto-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--proto-accent);
+    border: none;
+    border-radius: 50%;
+    cursor: grab;
+    transition: transform var(--proto-transition), box-shadow var(--proto-transition);
+}
+
+.proto-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 8px var(--proto-accent);
+}
+
+.proto-slider::-webkit-slider-thumb:active {
+    cursor: grabbing;
+}
+
+.proto-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--proto-accent);
+    border: none;
+    border-radius: 50%;
+    cursor: grab;
+}
+
+/* Toggle */
+.proto-toggle {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background: var(--proto-bg);
+    border: 1px solid var(--proto-border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.proto-toggle.active {
+    background: var(--proto-accent);
+    border-color: var(--proto-accent);
+}
+
+.proto-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    background: var(--proto-text);
+    border-radius: 50%;
+    transition: transform var(--proto-transition);
+}
+
+.proto-toggle.active::after {
+    transform: translateX(16px);
+}
+
+/* Color Picker */
+.proto-color-input {
+    width: 100%;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--proto-border);
+    border-radius: var(--proto-radius);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.proto-color-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.proto-color-input::-webkit-color-swatch {
+    border: none;
+    border-radius: var(--proto-radius);
+}
+
+/* Select */
+.proto-select {
+    width: 100%;
+    height: 32px;
+    padding: 0 10px;
+    background: var(--proto-bg);
+    border: 1px solid var(--proto-border);
+    border-radius: var(--proto-radius);
+    color: var(--proto-text);
+    font-size: 12px;
+    cursor: pointer;
+    transition: border-color var(--proto-transition);
+}
+
+.proto-select:hover {
+    border-color: var(--proto-border-hover);
+}
+
+.proto-select:focus {
+    outline: none;
+    border-color: var(--proto-accent);
+}
+
+/* -----------------------------------------------------------------------------
+   Color Stops
+   ----------------------------------------------------------------------------- */
+.proto-color-stops {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.proto-color-stop {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.proto-color-stop-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--proto-radius);
+    border: 1px solid var(--proto-border);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.proto-color-stop-swatch input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    cursor: pointer;
+}
+
+.proto-color-stop-position {
+    flex: 1;
+}
+
+.proto-color-stop-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: var(--proto-radius-sm);
+    color: var(--proto-text-muted);
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.proto-color-stop-delete:hover {
+    color: var(--proto-danger);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* -----------------------------------------------------------------------------
+   Utility Classes
+   ----------------------------------------------------------------------------- */
+.proto-empty-state {
+    padding: 24px;
+    text-align: center;
+    color: var(--proto-text-muted);
+    font-size: 12px;
+}
+
+.proto-divider {
+    height: 1px;
+    background: var(--proto-border);
+    margin: 12px 0;
+}
+
+/* Effect row */
+.proto-effect-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.proto-effect-label {
+    font-size: 12px;
+    color: var(--proto-text);
+}
+
+.proto-effect-controls {
+    margin-top: 8px;
+    padding-left: 12px;
+    border-left: 2px solid var(--proto-border);
+}
+
+/* -----------------------------------------------------------------------------
+   Header Section (Updated)
+   ----------------------------------------------------------------------------- */
+.proto-header-section {
+    border-bottom: 1px solid var(--proto-border);
+}
+
+.proto-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.proto-header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.proto-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--proto-accent);
+    letter-spacing: -0.02em;
+}
+
+.proto-badge {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--proto-text-muted);
+    padding: 2px 6px;
+    background: var(--proto-bg);
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.proto-header-subtitle {
+    font-size: 11px;
+    color: var(--proto-text-muted);
+    margin: 0 0 12px 0;
+}
+
+.proto-header-btn {
+    background: transparent;
+    border: 1px solid var(--proto-border);
+    border-radius: var(--proto-radius);
+    color: var(--proto-text-secondary);
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.proto-header-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.proto-header-btn:hover {
+    background: var(--proto-accent-dim);
+    border-color: var(--proto-accent);
+    color: var(--proto-accent);
+}
+
+.proto-header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.proto-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--proto-bg);
+    border: 1px solid var(--proto-border);
+    border-radius: var(--proto-radius);
+    color: var(--proto-text);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.proto-action-btn:hover {
+    border-color: var(--proto-border-hover);
+    background: var(--proto-surface-hover);
+}
+
+.proto-action-btn-primary {
+    background: var(--proto-accent);
+    border-color: var(--proto-accent);
+    color: #000;
+}
+
+.proto-action-btn-primary:hover {
+    background: var(--proto-accent-hover);
+    border-color: var(--proto-accent-hover);
+}
+
+/* -----------------------------------------------------------------------------
+   Discovery Mode Overlay
+   ----------------------------------------------------------------------------- */
+.discovery-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.discovery-overlay>* {
+    pointer-events: auto;
+}
+
+.discovery-top-bar {
+    display: flex;
+    justify-content: flex-start;
+    padding: 20px;
+}
+
+.discovery-seed-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: var(--proto-text-secondary);
+    font-size: 12px;
+}
+
+.discovery-seed-text {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 11px;
+}
+
+.discovery-center-controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.discovery-archetype-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 400px;
+    padding: 16px;
+    background: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    justify-content: center;
+}
+
+.discovery-archetype-btn {
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--proto-text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.discovery-archetype-btn:hover {
+    background: var(--proto-accent-dim);
+    border-color: var(--proto-accent);
+    color: var(--proto-accent);
+}
+
+.discovery-bottom-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    gap: 16px;
+}
+
+.discovery-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.discovery-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: var(--proto-text);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.discovery-action-btn:hover {
+    background: rgba(20, 20, 20, 0.9);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.discovery-action-primary {
+    background: var(--proto-accent);
+    border-color: var(--proto-accent);
+    color: #000;
+}
+
+.discovery-action-primary:hover {
+    background: var(--proto-accent-hover);
+    border-color: var(--proto-accent-hover);
+}
+
+.discovery-action-primary.animating {
+    transform: scale(0.95);
+}
+
+.discovery-action-secondary.active {
+    background: var(--proto-accent-dim);
+    border-color: var(--proto-accent);
+}
+
+.discovery-hints {
+    display: flex;
+    gap: 24px;
+}
+
+.discovery-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--proto-text-muted);
+    font-size: 12px;
+}
+
+.discovery-hint kbd {
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 11px;
+}
+
+/* -----------------------------------------------------------------------------
+   Export Modal
+   ----------------------------------------------------------------------------- */
+.export-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.export-modal {
+    width: 420px;
+    max-width: 90vw;
+    max-height: 80vh;
+    background: var(--proto-surface);
+    border: 1px solid var(--proto-border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.export-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--proto-border);
+}
+
+.export-modal-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--proto-text);
+    margin: 0;
+}
+
+.export-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--proto-text-secondary);
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.export-modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--proto-text);
+}
+
+.export-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--proto-border);
+}
+
+.export-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--proto-text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.export-tab:hover {
+    color: var(--proto-text);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.export-tab.active {
+    color: var(--proto-accent);
+    border-bottom-color: var(--proto-accent);
+}
+
+.export-modal-content {
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.export-control-group {
+    margin-bottom: 20px;
+}
+
+.export-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--proto-text-secondary);
+    margin-bottom: 8px;
+}
+
+.export-button-group {
+    display: flex;
+    gap: 8px;
+}
+
+.export-option-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px;
+    background: var(--proto-bg);
+    border: 1px solid var(--proto-border);
+    border-radius: 8px;
+    color: var(--proto-text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.export-option-btn:hover {
+    border-color: var(--proto-border-hover);
+}
+
+.export-option-btn.active {
+    background: var(--proto-accent-dim);
+    border-color: var(--proto-accent);
+}
+
+.export-option-detail {
+    font-size: 10px;
+    color: var(--proto-text-muted);
+    font-weight: 400;
+}
+
+.export-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.export-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--proto-text);
+    cursor: pointer;
+}
+
+.export-checkbox input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--proto-accent);
+}
+
+.export-css-preview {
+    background: var(--proto-bg);
+    border: 1px solid var(--proto-border);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--proto-text-secondary);
+    overflow-x: auto;
+    max-height: 150px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.export-primary-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px;
+    background: var(--proto-accent);
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.export-primary-btn:hover {
+    background: var(--proto-accent-hover);
+}
+
+.export-primary-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.export-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.export-note {
+    margin-top: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--proto-border);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--proto-text-muted);
+    line-height: 1.5;
+}
