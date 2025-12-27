@@ -942,3 +942,52 @@
     color: var(--proto-text-muted);
     line-height: 1.5;
 }
+
+/* -----------------------------------------------------------------------------
+   Section Badges
+   ----------------------------------------------------------------------------- */
+.proto-section-badge {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--proto-accent);
+    padding: 2px 6px;
+    background: var(--proto-accent-dim);
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* -----------------------------------------------------------------------------
+   Button Group (Segmented Control)
+   ----------------------------------------------------------------------------- */
+.proto-button-group {
+    display: flex;
+    gap: 2px;
+    background: var(--proto-bg);
+    border: 1px solid var(--proto-border);
+    border-radius: var(--proto-radius);
+    padding: 2px;
+}
+
+.proto-button-group-item {
+    flex: 1;
+    padding: 6px 10px;
+    background: transparent;
+    border: none;
+    border-radius: calc(var(--proto-radius) - 2px);
+    color: var(--proto-text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--proto-transition);
+}
+
+.proto-button-group-item:hover {
+    color: var(--proto-text);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.proto-button-group-item.active {
+    background: var(--proto-accent);
+    color: #000;
+}

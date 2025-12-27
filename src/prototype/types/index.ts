@@ -79,8 +79,16 @@ export type GrainEffect = {
     size: number // 1-5
 }
 
+export type GlobalNoiseEffect = {
+    enabled: boolean
+    intensity: number // 0-1
+    scale: number // 10-200
+    type: 'perlin' | 'simplex' | 'random'
+}
+
 export type GlobalEffects = {
     grain: GrainEffect
+    noise: GlobalNoiseEffect
 }
 
 // -----------------------------------------------------------------------------
@@ -156,6 +164,7 @@ export const createDefaultEffects = (): LayerEffects => ({
 
 export const createDefaultGlobalEffects = (): GlobalEffects => ({
     grain: { enabled: false, amount: 0.1, size: 1 },
+    noise: { enabled: false, intensity: 0.3, scale: 50, type: 'perlin' },
 })
 
 export const createDefaultColorStop = (color: string, position: number): GradientColorStop => ({

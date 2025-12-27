@@ -74,15 +74,52 @@ export class ExportService {
         canvas.width = width
         canvas.height = height
 
+        // Calculate scale factor based on original composition size vs export size
+        // This ensures effects like blur maintain their visual appearance
+        const originalSize = Math.max(composition.canvas.width, composition.canvas.height)
+        const exportSize = Math.max(width, height)
+        const scaleFactor = exportSize / originalSize
+
+        // Create scaled composition with adjusted effect values
+        const scaledLayers = composition.layers.map(layer => ({
+            ...layer,
+            effects: {
+                ...layer.effects,
+                blur: layer.effects.blur ? {
+                    ...layer.effects.blur,
+                    radius: layer.effects.blur.radius * scaleFactor,
+                } : undefined,
+                glow: layer.effects.glow ? {
+                    ...layer.effects.glow,
+                    spread: layer.effects.glow.spread * scaleFactor,
+                } : undefined,
+            },
+        }))
+
+        // Scale global effects as well
+        const scaledGlobalEffects = {
+            ...composition.globalEffects,
+            noise: composition.globalEffects.noise ? {
+                ...composition.globalEffects.noise,
+                scale: composition.globalEffects.noise.scale * scaleFactor,
+            } : undefined,
+            grain: composition.globalEffects.grain ? {
+                ...composition.globalEffects.grain,
+                size: composition.globalEffects.grain.size * scaleFactor,
+            } : undefined,
+        }
+
         // Create renderer and render composition
         const renderer = new CanvasRenderer(canvas)
-        const exportComposition = {
+        const exportComposition: GrydComposition = {
             ...composition,
             canvas: {
                 ...composition.canvas,
                 width,
                 height,
             },
+            layers: scaledLayers,
+            globalEffects: scaledGlobalEffects,
         }
         renderer.render(exportComposition)
 
@@ -117,7 +154,11 @@ export class ExportService {
         link.click()
         document.body.removeChild(link)
 
-        URL.revokeObjectURL(url)
+        // Delay revoking the URL to ensure the browser has time to process the download
+        // Immediate revocation can cause the file to be saved with the blob UUID as filename
+        setTimeout(() => {
+            URL.revokeObjectURL(url)
+        }, 150)
     }
 
     // -------------------------------------------------------------------------

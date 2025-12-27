@@ -315,6 +315,7 @@ export const useGrydStore = create<GrydStore>((set, get) => ({
             ...state.composition,
             globalEffects: {
                 grain: effects.grain ?? state.composition.globalEffects.grain,
+                noise: effects.noise ?? state.composition.globalEffects.noise,
             },
         },
     })),

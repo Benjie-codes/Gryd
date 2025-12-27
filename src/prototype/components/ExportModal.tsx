@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { useGrydStore } from '../store/compositionStore'
-import { ExportService, ImageFormat, ImageResolution, ColorFormat } from '../core/ExportService'
+import { ExportService, ImageFormat, ImageResolution, ColorFormat, AspectRatio } from '../core/ExportService'
 
 interface ExportModalProps {
     isOpen: boolean
@@ -8,6 +8,7 @@ interface ExportModalProps {
 }
 
 type ExportTab = 'image' | 'css'
+type Orientation = 'portrait' | 'landscape'
 
 const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }) => {
     const composition = useGrydStore(state => state.composition)
@@ -15,6 +16,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }) => {
     // Image export state
     const [imageFormat, setImageFormat] = useState<ImageFormat>('png')
     const [imageResolution, setImageResolution] = useState<ImageResolution>('2k')
+    const [orientation, setOrientation] = useState<Orientation>('portrait')
     const [isExporting, setIsExporting] = useState(false)
 
     // CSS export state
@@ -26,6 +28,30 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }) => {
     // Tab state
     const [activeTab, setActiveTab] = useState<ExportTab>('image')
 
+    // Get aspect ratio based on orientation
+    const getAspectRatio = (): AspectRatio => {
+        return orientation === 'portrait' ? '9:16' : '16:9'
+    }
+
+    // Get resolution dimensions based on orientation
+    const getResolutionDimensions = (resolution: ImageResolution): string => {
+        const baseSize: Record<ImageResolution, number> = {
+            '2k': 2048,
+            '4k': 4096,
+            '8k': 8192,
+        }
+        const size = baseSize[resolution]
+        if (orientation === 'portrait') {
+            // 9:16 - width is smaller
+            const width = Math.round(size * (9 / 16))
+            return `${width}×${size}`
+        } else {
+            // 16:9 - height is smaller
+            const height = Math.round(size * (9 / 16))
+            return `${size}×${height}`
+        }
+    }
+
     // Handle image export
     const handleExportImage = useCallback(async () => {
         setIsExporting(true)
@@ -33,14 +59,14 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }) => {
             await ExportService.downloadImage(composition, {
                 format: imageFormat,
                 resolution: imageResolution,
-                aspectRatio: 'square',
+                aspectRatio: getAspectRatio(),
             })
         } catch (error) {
             console.error('Export failed:', error)
         } finally {
             setIsExporting(false)
         }
-    }, [composition, imageFormat, imageResolution])
+    }, [composition, imageFormat, imageResolution, orientation])
 
     // Generate CSS preview
     const cssOutput = ExportService.generateCSS(composition, {
@@ -129,6 +155,33 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }) => {
                                 </div>
                             </div>
 
+                            {/* Orientation */}
+                            <div className="export-control-group">
+                                <label className="export-label">Orientation</label>
+                                <div className="export-button-group">
+                                    <button
+                                        className={`export-option-btn ${orientation === 'portrait' ? 'active' : ''}`}
+                                        onClick={() => setOrientation('portrait')}
+                                    >
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <rect x="6" y="2" width="12" height="20" rx="2" />
+                                        </svg>
+                                        Portrait
+                                        <span className="export-option-detail">9:16</span>
+                                    </button>
+                                    <button
+                                        className={`export-option-btn ${orientation === 'landscape' ? 'active' : ''}`}
+                                        onClick={() => setOrientation('landscape')}
+                                    >
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <rect x="2" y="6" width="20" height="12" rx="2" />
+                                        </svg>
+                                        Landscape
+                                        <span className="export-option-detail">16:9</span>
+                                    </button>
+                                </div>
+                            </div>
+
                             {/* Resolution */}
                             <div className="export-control-group">
                                 <label className="export-label">Resolution</label>
@@ -138,21 +191,21 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }) => {
                                         onClick={() => setImageResolution('2k')}
                                     >
                                         2K
-                                        <span className="export-option-detail">2048×2048</span>
+                                        <span className="export-option-detail">{getResolutionDimensions('2k')}</span>
                                     </button>
                                     <button
                                         className={`export-option-btn ${imageResolution === '4k' ? 'active' : ''}`}
                                         onClick={() => setImageResolution('4k')}
                                     >
                                         4K
-                                        <span className="export-option-detail">4096×4096</span>
+                                        <span className="export-option-detail">{getResolutionDimensions('4k')}</span>
                                     </button>
                                     <button
                                         className={`export-option-btn ${imageResolution === '8k' ? 'active' : ''}`}
                                         onClick={() => setImageResolution('8k')}
                                     >
                                         8K
-                                        <span className="export-option-detail">8192×8192</span>
+                                        <span className="export-option-detail">{getResolutionDimensions('8k')}</span>
                                     </button>
                                 </div>
                             </div>

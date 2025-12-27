@@ -3,6 +3,7 @@ import LayersSection from './controls/LayersSection'
 import ColorsSection from './controls/ColorsSection'
 import TransformSection from './controls/TransformSection'
 import EffectsSection from './controls/EffectsSection'
+import GlobalEffectsSection from './controls/GlobalEffectsSection'
 import AdvancedSection from './controls/AdvancedSection'
 import ExportModal from './ExportModal'
 import { useGrydStore } from '../store/compositionStore'
@@ -71,6 +72,7 @@ const ControlsPanel: React.FC = () => {
             <ColorsSection />
             <TransformSection />
             <EffectsSection />
+            <GlobalEffectsSection />
             <AdvancedSection />
 
             {/* Export Modal */}
