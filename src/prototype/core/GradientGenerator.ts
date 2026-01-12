@@ -9,6 +9,11 @@ import {
     GradientColorStop,
     BlendMode,
     createDefaultEffects,
+    createDefaultGlobalEffects,
+    HalftoneGradientEffect,
+    CorrugatedMetalEffect,
+    TextureOverlayEffect,
+
 } from '../types'
 
 // -----------------------------------------------------------------------------
@@ -284,6 +289,7 @@ export class GradientGenerator {
             },
             layers,
             globalEffects: {
+                ...createDefaultGlobalEffects(),
                 grain: {
                     enabled: archetype !== 'neon',
                     amount: 0.05 + this.rng.next() * 0.1,

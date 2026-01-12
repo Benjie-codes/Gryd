@@ -1,0 +1,82 @@
+{
+    "global_effect_texture": {
+        "description": "A collection of grayscale textures suitable for global effect overlays and gradients, ranging from frosted diffusion to granular patterns and reflective ripples.",
+        "textures": [
+            {
+                "id": "frosted_glass_smooth_001",
+                "name": "Smooth Frosted Glass",
+                "description": "A smooth, diffused frosted glass texture with a soft, uniform gradient from light gray to dark gray. Ideal for creating subtle, blurry overlays or soft light diffusion effects.",
+                "properties": {
+                    "type": "diffusion",
+                    "surface": "matte",
+                    "grain": "fine",
+                    "gradient_type": "linear",
+                    "light_source": "diffused_top_right",
+                    "alpha_channel_potential": "high"
+                },
+                "keywords": [
+                    "frosted",
+                    "glass",
+                    "blur",
+                    "diffused",
+                    "soft",
+                    "smooth",
+                    "matte",
+                    "overlay",
+                    "gradient"
+                ],
+                "usage_notes": "Best used for soft focus effects, background blurs, or adding a subtle, non-distracting texture to gradients."
+            },
+            {
+                "id": "brushed_metal_granular_001",
+                "name": "Granular Brushed Metal",
+                "description": "A fine, granular texture resembling sandblasted or brushed metal. The surface shows minute, uniform speckles with a subtle gradient showing directional lighting.",
+                "properties": {
+                    "type": "granular",
+                    "surface": "metallic",
+                    "grain": "medium",
+                    "gradient_type": "linear",
+                    "light_source": "directional_top_right",
+                    "alpha_channel_potential": "medium"
+                },
+                "keywords": [
+                    "granular",
+                    "metal",
+                    "brushed",
+                    "sandblasted",
+                    "speckled",
+                    "rough",
+                    "textured",
+                    "surface",
+                    "metallic"
+                ],
+                "usage_notes": "Use to add a tactile, industrial feel to gradients. Great for creating textured metal surfaces or gritty overlays."
+            },
+            {
+                "id": "rippled_water_reflective_001",
+                "name": "Reflective Rippled Water",
+                "description": "A complex, high-contrast texture of rippled water with strong reflections. The pattern is organic and wavy, creating a dynamic and shimmering effect.",
+                "properties": {
+                    "type": "pattern",
+                    "surface": "liquid",
+                    "grain": "coarse",
+                    "gradient_type": "complex_reflective",
+                    "light_source": "complex_environmental",
+                    "alpha_channel_potential": "low"
+                },
+                "keywords": [
+                    "water",
+                    "ripples",
+                    "reflective",
+                    "pattern",
+                    "liquid",
+                    "wavy",
+                    "shimmering",
+                    "high_contrast",
+                    "monochrome"
+                ],
+                "usage_notes": "Ideal for creating dynamic, organic gradient effects. Use for water simulations, reflective surfaces, or abstract patterned overlays that break up flat gradients."
+            }
+        ]
+    }
+}

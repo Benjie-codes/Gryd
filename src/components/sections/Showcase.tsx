@@ -1,29 +1,33 @@
 import React from "react";
 import { motion } from "framer-motion";
+import image1 from "../../assets/showcase/image1.png";
+import image2 from "../../assets/showcase/image2.png";
+import image3 from "../../assets/showcase/image3.png";
+import image4 from "../../assets/showcase/image4.png";
 
 const projects = [
     {
-        title: "NEON FLUX",
+        title: "NOISE",
         category: "Generative",
-        img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
+        img: image1,
         col: "md:col-span-3",
     },
     {
-        title: "VOID EATER",
-        category: "Atmospheric",
-        img: "https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=2670&auto=format&fit=crop",
-        col: "md:col-span-1",
-    },
-    {
-        title: "LIQUID METAL",
-        category: "Material",
-        img: "https://images.unsplash.com/photo-1584384689201-e0bcbe2c7f1d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        col: "md:col-span-1",
-    },
-    {
-        title: "CHROMATIC ABERRATION",
+        title: "HALFTONE",
         category: "Experimental",
-        img: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2670&auto=format&fit=crop",
+        img: image2,
+        col: "md:col-span-1",
+    },
+    {
+        title: "METAL",
+        category: "Material",
+        img: image3,
+        col: "md:col-span-1",
+    },
+    {
+        title: "GAUSSIAN BLUR",
+        category: "Atmospheric",
+        img: image4,
         col: "md:col-span-3",
     },
 ];

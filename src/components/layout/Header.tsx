@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import logo from "../../assets/brand/logo.png";
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -38,8 +39,7 @@ export default function Header() {
                 <div className="container mx-auto px-4 flex items-center justify-between">
                     {/* Logo */}
                     <a href="#" className="flex items-center gap-2 group">
-                        <div className="w-2 h-2 bg-primary rounded-full group-hover:animate-pulse shadow-[0_0_10px_var(--color-primary)]"></div>
-                        <span className="font-display font-bold text-xl tracking-tighter text-white mix-blend-difference">GRYD</span>
+                        <img src={logo} alt="GRYD Logo" className="h-8 w-auto object-contain transition-opacity duration-300 hover:opacity-80" />
                     </a>
 
                     {/* Desktop Nav */}

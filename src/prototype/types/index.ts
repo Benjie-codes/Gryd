@@ -79,6 +79,12 @@ export type GrainEffect = {
     size: number // 1-5
 }
 
+export type GlobalBlurEffect = {
+    enabled: boolean
+    strength: number // 0-100 (pixels)
+}
+
+
 export type GlobalNoiseEffect = {
     enabled: boolean
     intensity: number // 0-1
@@ -86,10 +92,96 @@ export type GlobalNoiseEffect = {
     type: 'perlin' | 'simplex' | 'random'
 }
 
-export type GlobalEffects = {
-    grain: GrainEffect
-    noise: GlobalNoiseEffect
+// Halftone Gradient Overlay Effect
+export type HalftonePatternType = 'stochastic_halftone' | 'ordered_halftone'
+
+export type HalftoneSource = {
+    dotSizeRange: [number, number]     // [min, max] dot size in pixels
+    dotDensity: 'low' | 'medium' | 'high'
+    contrast: 'low' | 'medium' | 'high'
+    noiseLevel: 'low' | 'medium' | 'high'
+    patternType: HalftonePatternType
+    baseColor: string                   // Background color (hex)
+    inkColor: string                    // Dot color (hex)
 }
+
+export type HalftoneBlendMode = 'multiply' | 'overlay' | 'soft-light' | 'hard-light'
+
+export type HalftoneGradientEffect = {
+    enabled: boolean
+    gradientPosition: number            // 0.0 (source_a / subtle) to 1.0 (source_b / bold)
+    sourceA: HalftoneSource             // Subtle, fine grain, low contrast
+    sourceB: HalftoneSource             // Bold, coarse grain, high contrast
+    blendMode: HalftoneBlendMode
+    dotSizeMultiplier: number           // 0.5 - 2.0 global scale factor
+    contrastIntensity: number           // 0.0 - 1.0
+    noiseBlend: number                  // 0.0 - 1.0
+    opacity: number                     // 0.0 - 1.0
+}
+
+
+
+
+// -----------------------------------------------------------------------------
+// Corrugated Metal Overlay Effect
+// -----------------------------------------------------------------------------
+export type MetalLightingStyle = 'soft_diagonal' | 'strong_horizontal'
+export type MetalBlendMode = 'overlay' | 'soft-light' | 'hard-light' | 'luminosity'
+
+export type CorrugatedMetalEffect = {
+    enabled: boolean
+    distortion: number          // 0.0 (straight) to 1.0 (wavy)
+    macroShading: {
+        intensity: number       // 0.2 to 1.0
+        style: MetalLightingStyle
+    }
+    microContrast: number       // 0.0 to 1.0 (metallic shine)
+    density: number             // 10 to 200 (Ridge density)
+    angle: number               // 0 to 360 (degrees)
+    opacity: number             // 0.0 to 1.0
+    blendMode: MetalBlendMode
+}
+
+// -----------------------------------------------------------------------------
+// Global Texture Effect (Procedural/Preset)
+// -----------------------------------------------------------------------------
+export type TextureProperties = {
+    type: 'diffusion' | 'granular' | 'pattern'
+    surface: string
+    grain: string
+    gradient_type: string
+    light_source: string
+    alpha_channel_potential: string
+}
+
+export type TexturePreset = {
+    id: string
+    name: string
+    description: string
+    properties: TextureProperties
+    keywords: string[]
+    usage_notes: string
+}
+
+export type TextureEffect = {
+    enabled: boolean
+    presetId: string
+    opacity: number
+    blendMode: BlendMode
+    scale: number
+}
+
+
+export type GlobalEffects = {
+    blur: GlobalBlurEffect
+    grain: GrainEffect
+
+    noise: GlobalNoiseEffect
+    halftone: HalftoneGradientEffect
+    metal: CorrugatedMetalEffect
+    texture: TextureEffect
+}
+
 
 // -----------------------------------------------------------------------------
 // Gradient Layer
@@ -162,10 +254,73 @@ export const createDefaultEffects = (): LayerEffects => ({
     glow: { enabled: false, intensity: 0.5, spread: 20 },
 })
 
-export const createDefaultGlobalEffects = (): GlobalEffects => ({
-    grain: { enabled: false, amount: 0.1, size: 1 },
-    noise: { enabled: false, intensity: 0.3, scale: 50, type: 'perlin' },
+export const createDefaultHalftoneEffect = (): HalftoneGradientEffect => ({
+    enabled: false,
+    gradientPosition: 0.5,
+    sourceA: {
+        dotSizeRange: [0.5, 2.0],
+        dotDensity: 'low',
+        contrast: 'low',
+        noiseLevel: 'medium',
+        patternType: 'stochastic_halftone',
+        baseColor: '#F0F0F0',
+        inkColor: '#333333',
+    },
+    sourceB: {
+        dotSizeRange: [2.5, 6.0],
+        dotDensity: 'high',
+        contrast: 'high',
+        noiseLevel: 'low',
+        patternType: 'ordered_halftone',
+        baseColor: '#FFFFFF',
+        inkColor: '#000000',
+    },
+    blendMode: 'overlay',
+    dotSizeMultiplier: 1.0,
+    contrastIntensity: 0.5,
+    noiseBlend: 0.3,
+    opacity: 0.5,
 })
+
+export const createDefaultMetalEffect = (): CorrugatedMetalEffect => ({
+    enabled: false,
+    distortion: 0.5,
+    macroShading: {
+        intensity: 0.6,
+        style: 'soft_diagonal',
+    },
+    microContrast: 0.8,
+    density: 100,
+    angle: 0,
+    opacity: 0.5,
+    blendMode: 'overlay',
+})
+
+export const createDefaultTextureEffect = (): TextureEffect => ({
+    enabled: false,
+    presetId: 'frosted_glass_smooth_001',
+    opacity: 0.5,
+    blendMode: 'overlay',
+    scale: 1,
+})
+
+
+
+export const createDefaultGlobalBlurEffect = (): GlobalBlurEffect => ({
+    enabled: false,
+    strength: 30,
+})
+
+export const createDefaultGlobalEffects = (): GlobalEffects => ({
+    blur: createDefaultGlobalBlurEffect(),
+    grain: { enabled: false, amount: 0.1, size: 1 },
+
+    noise: { enabled: false, intensity: 0.3, scale: 50, type: 'perlin' },
+    halftone: createDefaultHalftoneEffect(),
+    metal: createDefaultMetalEffect(),
+    texture: createDefaultTextureEffect(),
+})
+
 
 export const createDefaultColorStop = (color: string, position: number): GradientColorStop => ({
     id: crypto.randomUUID(),

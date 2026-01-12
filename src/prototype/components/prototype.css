@@ -238,6 +238,16 @@
     color: var(--proto-text-muted);
 }
 
+.proto-control-hint {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--proto-text-muted);
+}
+
 /* Sliders */
 .proto-slider {
     width: 100%;

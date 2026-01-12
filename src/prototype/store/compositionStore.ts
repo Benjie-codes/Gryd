@@ -11,8 +11,10 @@ import {
     createDefaultComposition,
     createDefaultLayer,
     createDefaultColorStop,
+    createDefaultGlobalBlurEffect,
 } from '../types'
 import { GradientGenerator, GradientArchetype } from '../core/GradientGenerator'
+
 
 // =============================================================================
 // Store State Interface
@@ -314,8 +316,8 @@ export const useGrydStore = create<GrydStore>((set, get) => ({
         composition: {
             ...state.composition,
             globalEffects: {
-                grain: effects.grain ?? state.composition.globalEffects.grain,
-                noise: effects.noise ?? state.composition.globalEffects.noise,
+                ...state.composition.globalEffects,
+                ...effects,
             },
         },
     })),

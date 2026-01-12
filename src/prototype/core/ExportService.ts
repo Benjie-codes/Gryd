@@ -3,7 +3,8 @@
 // Handles PNG/JPG image export and CSS gradient generation
 // =============================================================================
 
-import { GrydComposition, GradientLayer, GradientColorStop } from '../types'
+import { GrydComposition, GradientLayer, GradientColorStop, BlendMode } from '../types'
+
 import { CanvasRenderer } from './CanvasRenderer'
 
 // -----------------------------------------------------------------------------
@@ -99,17 +100,75 @@ export class ExportService {
         // Scale global effects as well
         const scaledGlobalEffects = {
             ...composition.globalEffects,
-            noise: composition.globalEffects.noise ? {
+            blur: composition.globalEffects.blur ? {
+                ...composition.globalEffects.blur,
+                strength: composition.globalEffects.blur.strength * scaleFactor,
+            } : {
+                enabled: false,
+                strength: 0,
+            },
+            noise: {
+
                 ...composition.globalEffects.noise,
                 scale: composition.globalEffects.noise.scale * scaleFactor,
-            } : undefined,
-            grain: composition.globalEffects.grain ? {
+            },
+            grain: {
                 ...composition.globalEffects.grain,
                 size: composition.globalEffects.grain.size * scaleFactor,
-            } : undefined,
+            },
+            metal: {
+                ...composition.globalEffects.metal,
+                density: composition.globalEffects.metal.density / scaleFactor,
+            },
+            texture: composition.globalEffects.texture ? {
+                ...composition.globalEffects.texture,
+                scale: composition.globalEffects.texture.scale * scaleFactor,
+            } : {
+                enabled: false,
+                presetId: 'frosted_glass_smooth_001',
+                opacity: 0.5,
+                blendMode: 'overlay' as BlendMode,
+                scale: 1 * scaleFactor,
+            },
+            halftone: composition.globalEffects.halftone ? {
+                ...composition.globalEffects.halftone,
+                // Scale dot size multiplier to maintain relative size
+                dotSizeMultiplier: composition.globalEffects.halftone.dotSizeMultiplier * scaleFactor,
+            } : {
+                enabled: false,
+                gradientPosition: 0.5,
+                sourceA: {
+                    dotSizeRange: [2, 8] as [number, number],
+                    dotDensity: 'medium' as const,
+                    contrast: 'medium' as const,
+                    noiseLevel: 'medium' as const,
+                    patternType: 'ordered_halftone' as const,
+                    baseColor: '#ffffff',
+                    inkColor: '#000000',
+                },
+
+                sourceB: {
+                    dotSizeRange: [4, 12] as [number, number],
+                    dotDensity: 'medium' as const,
+                    contrast: 'medium' as const,
+                    noiseLevel: 'medium' as const,
+                    patternType: 'stochastic_halftone' as const,
+                    baseColor: '#ffffff',
+                    inkColor: '#000000',
+                },
+
+                blendMode: 'overlay' as const,
+
+                dotSizeMultiplier: 1,
+                contrastIntensity: 1,
+                noiseBlend: 0.2,
+                opacity: 0.8,
+            },
         }
 
-        // Create renderer and render composition
+
+
+        // Create renderer
         const renderer = new CanvasRenderer(canvas)
         const exportComposition: GrydComposition = {
             ...composition,
@@ -121,6 +180,7 @@ export class ExportService {
             layers: scaledLayers,
             globalEffects: scaledGlobalEffects,
         }
+
         renderer.render(exportComposition)
 
         // Convert to blob
