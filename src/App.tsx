@@ -6,7 +6,7 @@ import Roadmap from "./components/sections/Roadmap";
 import Showcase from "./components/sections/Showcase";
 import Waitlist from "./components/sections/Waitlist";
 import Footer from "./components/layout/Footer";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
     // Smooth scroll behavior

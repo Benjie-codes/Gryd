@@ -1,4 +1,4 @@
-import { Instagram, Linkedin, Twitter } from "lucide-react";
+import { Instagram, Linkedin } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -10,9 +10,11 @@ export default function Footer() {
         </div>
 
         <div className="flex gap-8 text-muted-foreground">
-          <a href="#" className="hover:text-primary transition-colors hover:scale-110 duration-200">
-            {/* Using Twitter icon for X as it's the standard library replacement often, or I could use an SVG for X if critical. For now Twitter icon is a safe fallback or I can just assume they want the X logo. */}
-            <Twitter className="w-5 h-5" />
+          <a href="https://x.com/GrydHQ" className="hover:text-primary transition-colors hover:scale-110 duration-200">
+            {/* X Logo */}
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+            </svg>
           </a>
           <a href="#" className="hover:text-primary transition-colors hover:scale-110 duration-200">
             <Instagram className="w-5 h-5" />
