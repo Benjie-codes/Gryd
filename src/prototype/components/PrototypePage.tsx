@@ -1,5 +1,5 @@
 import React from 'react'
-import GradientCanvas from './GradientCanvas'
+import CanvasBootstrap from '../../components/CanvasBootstrap'
 import ControlsPanel from './ControlsPanel'
 import DiscoveryOverlay from './DiscoveryOverlay'
 import { useGrydStore } from '../store/compositionStore'
@@ -12,7 +12,7 @@ const PrototypePage: React.FC = () => {
         <div className="prototype-container">
             {/* Canvas Area */}
             <div className="prototype-canvas-area">
-                <GradientCanvas />
+                <CanvasBootstrap />
 
                 {/* Discovery Mode Overlay */}
                 {viewMode === 'discovery' && <DiscoveryOverlay />}
