@@ -7,6 +7,7 @@ import { applySafeBlur, createBlurCache, invalidateBlurCache, BlurCache } from '
 import { applySafeNoise, createNoiseCache, invalidateNoiseCache, NoiseCache } from '../utils/noiseStrategy'
 import { IOSTier, TierSettings, detectIOSTier, getTierSettings } from '../utils/qualityTiers'
 import { IOSTelemetry } from '../utils/telemetry'
+import { preloadTextures } from '../utils/textureLoader'
 
 // =============================================================================
 // IOS Renderer
@@ -74,6 +75,12 @@ export class IOSRenderer implements RendererInterface {
         // iOS Specific: Explicitly disable filter support to force fallbacks
         // This avoids the common 'filter' crashes on some iOS versions
         this.isFilterSupported = false
+
+        // Preload pre-rendered textures for grain and blur effects
+        // This runs async but textures will be ready before first render in most cases
+        preloadTextures().catch(err => {
+            console.warn('[IOSRenderer] Texture preload failed, using fallbacks:', err)
+        })
     }
 
     // ---------------------------------------------------------------------------

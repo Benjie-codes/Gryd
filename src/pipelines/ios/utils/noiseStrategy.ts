@@ -1,10 +1,13 @@
 import { createIOSBufferCanvas } from './canvasConstraints'
+import { getGrainTexture, areTexturesLoaded, tileTexture } from './textureLoader'
 
 /**
  * iOS Safe Noise Strategy
  * 
- * Replaces per-frame pixel manipulation (getImageData/putImageData) with
- * cached static noise textures blended via globalCompositeOperation.
+ * Uses pre-rendered tileable grain textures instead of per-frame pixel 
+ * manipulation (getImageData/putImageData) which causes issues on iOS WebKit.
+ * 
+ * Grain textures are 512x512 and designed to tile seamlessly.
  */
 
 export interface NoiseCache {
@@ -26,59 +29,41 @@ export function invalidateNoiseCache(cache: NoiseCache) {
 }
 
 /**
- * Generates a seamless noise texture.
- * Used for both Grain and Noise effects.
+ * Fallback: Generates a simple noise texture procedurally.
+ * Only used if pre-rendered textures fail to load.
  */
-function generateNoiseTexture(
+function generateFallbackNoiseTexture(
     width: number,
     height: number,
-    amount: number,   // 0-1 range typically
-    scale: number,
-    colored: boolean = false
+    amount: number,
+    scale: number
 ): HTMLCanvasElement {
     const canvas = createIOSBufferCanvas(width, height)
     const ctx = canvas.getContext('2d')
     if (!ctx) return canvas
 
-    // Optimize: Make noise smaller and scale up if scale > 1
-    // This saves generation time
-    const genW = Math.ceil(width / scale)
-    const genH = Math.ceil(height / scale)
+    // Create smaller buffer and scale up to reduce computation
+    const genW = Math.ceil(width / Math.max(1, scale))
+    const genH = Math.ceil(height / Math.max(1, scale))
 
-    // Create temp buffer for generation if scaling
     const genCanvas = scale === 1 ? canvas : createIOSBufferCanvas(genW, genH)
     const genCtx = genCanvas.getContext('2d')!
 
     const imgData = genCtx.createImageData(genW, genH)
     const data = imgData.data
     const len = data.length
-
-    // Reduce intensity to meaningful range for alpha blending
-    // e.g. amount 0.5 -> variance +/- 128? 
-    // Usually we want a grey texture with noise.
-    // For overlay blend mode: 128 is neutral.
-    // Noise values should range from (128 - amp) to (128 + amp)
     const amp = amount * 127
 
     for (let i = 0; i < len; i += 4) {
-        if (colored) {
-            data[i] = 128 + (Math.random() - 0.5) * amp * 2
-            data[i + 1] = 128 + (Math.random() - 0.5) * amp * 2
-            data[i + 2] = 128 + (Math.random() - 0.5) * amp * 2
-        } else {
-            const val = 128 + (Math.random() - 0.5) * amp * 2
-            data[i] = val
-            data[i + 1] = val
-            data[i + 2] = val
-        }
-        // Full opacity, we control blend via globalAlpha or just let overlay work
+        const val = 128 + (Math.random() - 0.5) * amp * 2
+        data[i] = val
+        data[i + 1] = val
+        data[i + 2] = val
         data[i + 3] = 255
     }
 
     genCtx.putImageData(imgData, 0, 0)
 
-    // If scaled, draw back to main canvas with nearest neighbor for pixel look,
-    // or linear for smooth noise. Grain usually looks better with "crisp" edges (nearest).
     if (scale !== 1) {
         ctx.imageSmoothingEnabled = false
         ctx.drawImage(genCanvas, 0, 0, width, height)
@@ -88,30 +73,38 @@ function generateNoiseTexture(
 }
 
 /**
- * Applies cached noise/grain to the context.
+ * Applies cached noise/grain to the context using pre-rendered textures.
+ * Falls back to procedural generation if textures aren't loaded.
  */
 export function applySafeNoise(
     ctx: CanvasRenderingContext2D,
     cache: NoiseCache,
     width: number,
     height: number,
-    // Params unique to noise type
     intensity: number,
     scale: number,
-    type: 'grain' | 'noise', // grain is usually mono, noise might be colored or just different param mapping
-    seed?: number // Ignored for simple random noise but kept for API shape
+    type: 'grain' | 'noise',
+    seed?: number
 ) {
     if (intensity <= 0) return
 
-    // Serialized params key
+    // Try to use pre-rendered textures first (preferred for iOS)
+    if (areTexturesLoaded()) {
+        const texture = getGrainTexture(intensity)
+        if (texture) {
+            // Use tileTexture for seamless tiling of pre-rendered asset
+            // Opacity is modulated by intensity for fine control
+            const opacity = Math.min(1.0, intensity * 1.5) // Scale up for visibility
+            tileTexture(ctx, texture, width, height, opacity, 'overlay')
+            return
+        }
+    }
+
+    // Fallback to cached procedural generation
     const paramsKey = `${width}x${height}-${intensity}-${scale}-${type}`
 
     if (!cache.isValid || cache.params !== paramsKey || !cache.buffer) {
-        // Generate new texture
-        // Grain: simple mono noise
-        // Noise: maybe colored? For now assume mono for performance unless requested
-        const texture = generateNoiseTexture(width, height, intensity, scale, false)
-
+        const texture = generateFallbackNoiseTexture(width, height, intensity, scale)
         cache.buffer = texture
         cache.params = paramsKey
         cache.isValid = true
@@ -119,11 +112,8 @@ export function applySafeNoise(
 
     if (cache.buffer) {
         ctx.save()
-        // Overlay blend mode computes:
-        // (Target < 0.5) ? (2 * Target * Source) : (1 - 2 * (1 - Target) * (1 - Source))
-        // Since Source is ~0.5 (128), it's close to neutral pass-through via scaling.
         ctx.globalCompositeOperation = 'overlay'
-        ctx.globalAlpha = 1.0 // Intensity baked into texture, but we can modulate if needed
+        ctx.globalAlpha = 1.0
         ctx.drawImage(cache.buffer, 0, 0, width, height)
         ctx.restore()
     }

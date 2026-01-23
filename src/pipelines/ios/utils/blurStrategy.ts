@@ -1,19 +1,16 @@
 import { createIOSBufferCanvas } from './canvasConstraints'
+import { getBlurTexture, areTexturesLoaded, tileTexture } from './textureLoader'
 
 /**
  * iOS Safe Blur Strategy
  * 
- * Replaces expensive and crash-prone `ctx.filter = 'blur()'` with a 
- * performant downscale-upscale approach.
+ * Provides two approaches for blur on iOS:
+ * 1. Pre-rendered blur textures (preferred) - overlaid for a frosted glass effect
+ * 2. Downscale-upscale fallback - cheaper than CSS filter but still functional
  * 
- * Mechanism:
- * 1. Draw source to a tiny offscreen canvas (scaling down aggressively).
- * 2. Draw the tiny canvas back to the destination (scaling up).
- * 3. The browser's bilinear texturing acts as a poor man's blur.
- * 4. Repeating this pass or stacking layers creates a smoother Gaussian-like look.
+ * Blur textures are 1024x1024 and designed to tile seamlessly.
  */
 
-// Interface for the cached blur state
 export interface BlurCache {
     buffer: HTMLCanvasElement | null
     strength: number
@@ -32,19 +29,20 @@ export function createBlurCache(): BlurCache {
 }
 
 /**
- * invalidates the blur cache, forcing a re-render on next call.
+ * Invalidates the blur cache, forcing a re-render on next call.
  */
 export function invalidateBlurCache(cache: BlurCache) {
     cache.isValid = false
 }
 
 /**
- * Applies a safe blur effect to the given context.
+ * Applies a blur effect using pre-rendered textures when available,
+ * with downscale-upscale fallback for iOS compatibility.
  * 
  * @param ctx The target context (usually the main display context).
  * @param sourceCanvas The source canvas containing the unblurred image.
- * @param cache The blur cache object to store/retrieve the intermediate bitmap.
- * @param strength The blur strength (radius). Mapped to downscale factor.
+ * @param cache The blur cache object for intermediate bitmap.
+ * @param strength The blur strength (0-100 range).
  * @param width Current width of the target.
  * @param height Current height of the target.
  */
@@ -62,12 +60,38 @@ export function applySafeBlur(
         return
     }
 
+    // First, draw the blurred base using downscale-upscale
+    applyDownscaleBlur(ctx, sourceCanvas, cache, strength, width, height)
+
+    // Then overlay the pre-rendered blur texture for enhanced effect
+    if (areTexturesLoaded()) {
+        const blurTexture = getBlurTexture(strength)
+        if (blurTexture) {
+            // Calculate opacity based on strength (stronger blur = more visible texture)
+            const opacity = Math.min(0.6, strength / 100)
+            tileTexture(ctx, blurTexture, width, height, opacity, 'screen')
+        }
+    }
+}
+
+/**
+ * Downscale-upscale blur implementation.
+ * Creates a soft blur by drawing to a small buffer and scaling back up.
+ */
+function applyDownscaleBlur(
+    ctx: CanvasRenderingContext2D,
+    sourceCanvas: HTMLCanvasElement,
+    cache: BlurCache,
+    strength: number,
+    width: number,
+    height: number
+) {
     // Reuse or create cache buffer
     if (!cache.isValid || !cache.buffer || cache.strength !== strength || cache.buffer.width === 0) {
         // Calculate downscale factor
         // Higher strength = smaller buffer = more blur
-        // Map strength (0-100ish) to a divisor (1 - 20)
-        const divisor = Math.max(2, Math.min(20, strength / 2))
+        // Map strength (0-100) to a divisor (2 - 20)
+        const divisor = Math.max(2, Math.min(20, strength / 5))
 
         const smallW = Math.max(16, Math.floor(width / divisor))
         const smallH = Math.max(16, Math.floor(height / divisor))
@@ -82,7 +106,7 @@ export function applySafeBlur(
 
         const bufferCtx = cache.buffer.getContext('2d')
         if (bufferCtx) {
-            // Quality hack: turn ON smoothing for the downscale (averages pixels)
+            // Quality: turn ON smoothing for the downscale (averages pixels)
             bufferCtx.imageSmoothingEnabled = true
             bufferCtx.imageSmoothingQuality = 'medium'
 
@@ -96,9 +120,9 @@ export function applySafeBlur(
 
     if (cache.buffer) {
         // Draw cached small buffer to main context (upscale)
-        // Ensure smoothing is ON for the target context to blur the pixels
+        // Smoothing ON for blur effect
         ctx.imageSmoothingEnabled = true
-        ctx.imageSmoothingQuality = 'medium' // 'high' is risky on iOS 
+        ctx.imageSmoothingQuality = 'medium' // 'high' can be risky on iOS
 
         ctx.drawImage(cache.buffer, 0, 0, width, height)
     } else {
