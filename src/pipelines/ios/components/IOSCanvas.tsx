@@ -114,6 +114,27 @@ const IOSCanvas: React.FC<IOSCanvasProps> = ({ className, config }) => {
                     WebkitTouchCallout: 'none'
                 }}
             />
+            {/* iOS Device Indicator Badge */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '12px',
+                    right: '12px',
+                    backgroundColor: 'rgba(0, 122, 255, 0.9)',
+                    color: 'white',
+                    padding: '4px 10px',
+                    borderRadius: '12px',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                    letterSpacing: '0.5px',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                    zIndex: 100,
+                    pointerEvents: 'none'
+                }}
+            >
+                iOS Pipeline Active
+            </div>
         </div>
     )
 }

@@ -95,9 +95,12 @@ export function applySafeNoise(
             // Use tileTexture for seamless tiling of pre-rendered asset
             // Opacity is modulated by intensity for fine control
             const opacity = Math.min(1.0, intensity * 1.5) // Scale up for visibility
+            console.log(`[iOS Noise] Using pre-rendered grain texture, intensity: ${intensity}, opacity: ${opacity}`)
             tileTexture(ctx, texture, width, height, opacity, 'overlay')
             return
         }
+    } else {
+        console.log('[iOS Noise] Textures not loaded yet, using fallback')
     }
 
     // Fallback to cached procedural generation
