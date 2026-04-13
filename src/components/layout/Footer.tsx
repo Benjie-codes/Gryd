@@ -19,9 +19,9 @@ export default function Footer() {
           <a href="#" className="hover:text-primary transition-colors hover:scale-110 duration-200">
             <Instagram className="w-5 h-5" />
           </a>
-          <a href="#" className="hover:text-primary transition-colors hover:scale-110 duration-200">
+          {/* <a href="#" className="hover:text-primary transition-colors hover:scale-110 duration-200">
             <Linkedin className="w-5 h-5" />
-          </a>
+          </a> */}
         </div>
 
         <div className="text-xs text-white/20 font-mono">

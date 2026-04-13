@@ -44,10 +44,10 @@ export default function Waitlist() {
 
             <div className="container mx-auto relative z-10 max-w-2xl text-center">
                 <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6 font-display">
-                    JOIN THE <span className="text-primary">ALPHA</span>
+                    JOIN THE <span className="text-primary">COMMUNITY</span>
                 </h2>
                 <p className="text-muted-foreground mb-12 text-lg">
-                    Limited spots available for the Q1 2026 cohort. Secure your access identifier.
+                    Get frequent updates and exclusive access to the Gryd team.
                 </p>
 
                 <form onSubmit={handleSubmit} className="relative group">

@@ -3,35 +3,35 @@ import { motion } from "framer-motion";
 
 const phases = [
     {
-        label: "Now",
+        label: "Completed",
         title: "Building the foundation",
         subtitle: "Private development",
         description: "We’re currently building Gryd’s core: A style-first gradient engine. Expressive, layered gradient styles. Visual depth through blur, glow, and texture.",
         note: "This phase is about getting the fundamentals right."
     },
     {
-        label: "Soon",
+        label: "Completed",
         title: "Early access",
         subtitle: "Invite-only release",
         description: "Early waitlist members will get: Access to initial gradient styles. A chance to explore and experiment. A direct line to influence what’s built next.",
         note: "This stage is about learning fast and refining quality."
     },
     {
-        label: "Next",
+        label: "Completed",
         title: "Refinement & expansion",
         subtitle: "Polishing for real-world use",
         description: "Based on early feedback, we’ll focus on: Improving style quality and consistency. Making gradients easier to use in real projects. Expanding the style library with new visual directions.",
         note: "This phase turns exploration into reliability."
     },
     {
-        label: "Launch",
+        label: "Now",
         title: "Public release",
         subtitle: "Opening Gryd to everyone",
         description: "At launch, Gryd will offer: A curated set of expressive gradient styles. Production-ready outputs for modern interfaces. A clear bridge between design intent and implementation.",
         note: "Simple, focused, and ready to ship."
     },
     {
-        label: "Beyond",
+        label: "Soon",
         title: "Continuous evolution",
         subtitle: "Growing with the community",
         description: "Post-launch, Gryd will continue to evolve with: New styles and experimental releases. Workflow improvements. Features shaped by real usage.",
@@ -105,7 +105,7 @@ export default function Roadmap() {
                 </div>
 
                 {/* Call to Action for Waitlist */}
-                <motion.div
+                {/* <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
@@ -120,7 +120,7 @@ export default function Roadmap() {
                     <p className="font-mono text-sm text-primary relative z-10">
                         If you care about how gradients feel, not just how they’re generated — now is the time to join.
                     </p>
-                </motion.div>
+                </motion.div> */}
             </div>
         </section>
     );

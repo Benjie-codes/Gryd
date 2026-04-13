@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "../../assets/brand/logo.png";
 
 export default function Header() {
@@ -59,13 +60,19 @@ export default function Header() {
 
                     {/* CTA & Mobile Toggle */}
                     <div className="flex items-center gap-4">
-                        <a
+                        <Link
+                            to="/prototype"
+                            className="hidden md:flex items-center px-6 py-2 rounded-full bg-primary text-black font-mono text-xs tracking-widest uppercase font-bold hover:bg-primary/90 transition-all duration-300 shadow-[0_0_20px_var(--color-primary)/30]"
+                        >
+                            Try Gryd
+                        </Link>
+                        {/* <a
                             href="#waitlist"
                             onClick={(e) => scrollToSection(e, "#waitlist")}
                             className="hidden md:flex items-center px-6 py-2 rounded-full border border-white/20 bg-white/5 hover:bg-primary hover:text-black hover:border-primary transition-all duration-300 font-mono text-xs tracking-widest uppercase font-bold"
                         >
                             Join Waitlist
-                        </a>
+                        </a> */}
 
                         <button
                             className="md:hidden text-white"
@@ -96,13 +103,19 @@ export default function Header() {
                                 {link.name}
                             </a>
                         ))}
-                        <a
-                            href="#waitlist"
-                            onClick={(e) => scrollToSection(e, "#waitlist")}
+                        <Link
+                            to="/prototype"
                             className="mt-4 px-8 py-3 rounded-full bg-primary text-black font-bold font-mono text-sm tracking-widest uppercase"
                         >
+                            Try Gryd
+                        </Link>
+                        {/* <a
+                            href="#waitlist"
+                            onClick={(e) => scrollToSection(e, "#waitlist")}
+                            className="px-8 py-3 rounded-full border border-white/20 bg-white/5 text-white font-bold font-mono text-sm tracking-widest uppercase"
+                        >
                             Join Waitlist
-                        </a>
+                        </a> */}
                     </motion.div>
                 )}
             </AnimatePresence>
